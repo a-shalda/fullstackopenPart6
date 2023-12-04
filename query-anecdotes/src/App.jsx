@@ -2,8 +2,20 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes, voteAnecdote } from './requests'
+import { useReducer } from 'react'
+import NotificationContext from './NotificationContext'
+
+
+const notificationReducer = (state, action) => {
+  return action
+}
+
+let timeoutId
+
 
 const App = () => {
+
+  const [notification, notificationDispatch] = useReducer(notificationReducer, null)
 
   const queryClient = useQueryClient()
 
@@ -22,7 +34,7 @@ const App = () => {
 
   //isPending, isLoading, isError, data, error
 
-  if ( result.isLoading ) {
+  if (result.isLoading) {
     return <div>loading data...</div>
   }
 
@@ -30,16 +42,17 @@ const App = () => {
     return <span>Error: {result.error.message}</span>
   }
 
-
-
   const handleVote = (anecdote) => {
 
     const changedAnecdote = {
       ...anecdote,
       votes: anecdote.votes + 1
     }
-
     const result = voteMutation.mutate(changedAnecdote)
+
+    notificationDispatch(`Anecdote '${anecdote.content}' voted`)
+    timeoutId && clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => { notificationDispatch(null) }, 5000)
   }
 
   const anecdotes = result.data
@@ -47,9 +60,14 @@ const App = () => {
   return (
     <div>
       <h3>Anecdote app</h3>
+      <NotificationContext.Provider value={[notification, notificationDispatch]}>
+        <Notification />
+      </NotificationContext.Provider>
 
-      <Notification />
-      <AnecdoteForm />
+      <NotificationContext.Provider value={[notification, notificationDispatch]}>
+        <AnecdoteForm />
+      </NotificationContext.Provider>
+
 
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
