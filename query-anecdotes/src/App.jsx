@@ -6,25 +6,27 @@ import { getAnecdotes } from './requests'
 
 const App = () => {
 
-  const { isPending, isLoading, isError, data, error } = useQuery({
+  const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes,
     retry: 1
   })
 
-  if ( isLoading ) {
+  //isPending, isLoading, isError, data, error
+
+  if ( result.isLoading ) {
     return <div>loading data...</div>
   }
 
-  if (isError) {
-    return <span>Error: {error.message}</span>
+  if (result.isError) {
+    return <span>Error: {result.error.message}</span>
   }
 
   const handleVote = (anecdote) => {
     console.log('vote')
   }
 
-  const anecdotes = data
+  const anecdotes = result.data
 
   return (
     <div>
