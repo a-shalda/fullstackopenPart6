@@ -18,7 +18,7 @@ const AnecdoteList = () => {
   const handleClick = (anecdote) => {
     dispatch(upvoteAnecdote(anecdote))
 
-    dispatch(notificationAnecdotes(`You voted '${anecdote.content}'`))
+    dispatch(notificationAnecdotes(`You voted '${anecdote.content}'`, 10000))
     timeoutId && clearTimeout(timeoutId)
     timeoutId = setTimeout(() => {dispatch(removeNotificationAnecdotes(null))}, 5000)
   }
