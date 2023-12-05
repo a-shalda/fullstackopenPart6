@@ -1,8 +1,8 @@
 import { upvoteAnecdote } from '../reducers/anecdoteReducer'
 import { notificationAnecdotes, removeNotificationAnecdotes } from '../reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
+import { cleartimeOutId, settimeOutId } from './Notification'
 
-let timeoutId
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
@@ -19,8 +19,9 @@ const AnecdoteList = () => {
     dispatch(upvoteAnecdote(anecdote))
 
     dispatch(notificationAnecdotes(`You voted '${anecdote.content}'`, 10000))
-    timeoutId && clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => {dispatch(removeNotificationAnecdotes(null))}, 5000)
+    cleartimeOutId()
+    const newTimeoutId = setTimeout(() => {dispatch(removeNotificationAnecdotes(null))}, 5000)
+    settimeOutId(newTimeoutId)
   }
 
   return (

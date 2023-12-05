@@ -1,5 +1,15 @@
 import { useSelector } from 'react-redux'
 
+let timeoutId
+
+export const cleartimeOutId = () => {
+  timeoutId && clearTimeout(timeoutId)
+}
+
+export const settimeOutId = (newTimeoutId) => {
+  timeoutId = newTimeoutId
+}
+
 
 const Notification = () => {
 
