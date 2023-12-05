@@ -10,7 +10,15 @@ const notificationReducer = (state, action) => {
   return action
 }
 
-let timeoutId
+export let timeoutId
+
+export const cleartimeOutId = () => {
+  timeoutId && clearTimeout(timeoutId)
+}
+
+export const settimeOutId = (newTimeoutId) => {
+  timeoutId = newTimeoutId
+}
 
 
 const App = () => {
@@ -24,12 +32,15 @@ const App = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
     },
+    onError: () => {
+      console.log('error')
+    }
   })
 
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes,
-    retry: 1
+    retry: 2
   })
 
   //isPending, isLoading, isError, data, error
@@ -48,11 +59,11 @@ const App = () => {
       ...anecdote,
       votes: anecdote.votes + 1
     }
-    const result = voteMutation.mutate(changedAnecdote)
-
+    voteMutation.mutate(changedAnecdote)
     notificationDispatch(`Anecdote '${anecdote.content}' voted`)
-    timeoutId && clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => { notificationDispatch(null) }, 5000)
+    cleartimeOutId()
+    const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 3000)
+    settimeOutId(newTimeoutId)
   }
 
   const anecdotes = result.data

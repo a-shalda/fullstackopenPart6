@@ -2,10 +2,10 @@ import { createAnecdote } from '../requests'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 import NotificationContext from '../NotificationContext'
+import { cleartimeOutId, settimeOutId } from '../App'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
-let timeoutId
 
 
 const AnecdoteForm = () => {
@@ -19,15 +19,26 @@ const AnecdoteForm = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
     },
+    onError: (error) => {
+      notificationDispatch(error.response.data.error)
+      cleartimeOutId()
+      const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 3000)
+      settimeOutId(newTimeoutId)
+    }
   })
 
   const onCreate = (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
-    notificationDispatch(`Anecdote '${content}' added`)
-    timeoutId && clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => { notificationDispatch(null) }, 5000)
-    newNoteMutation.mutate({ content, id: getId(), votes: 0 })
+    newNoteMutation.mutate({ content, id: getId(), votes: 0 }, {
+      onSuccess: () => {
+        notificationDispatch(`Anecdote '${content}' added`)
+        cleartimeOutId()
+        const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 3000)
+        settimeOutId(newTimeoutId)
+      }
+    })
+
     event.target.anecdote.value = ''
   }
 
