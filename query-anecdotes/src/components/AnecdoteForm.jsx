@@ -22,7 +22,7 @@ const AnecdoteForm = () => {
     onError: (error) => {
       notificationDispatch(error.response.data.error)
       cleartimeOutId()
-      const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 3000)
+      const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 5000)
       settimeOutId(newTimeoutId)
     }
   })
@@ -34,7 +34,7 @@ const AnecdoteForm = () => {
       onSuccess: () => {
         notificationDispatch(`Anecdote '${content}' added`)
         cleartimeOutId()
-        const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 3000)
+        const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 5000)
         settimeOutId(newTimeoutId)
       }
     })

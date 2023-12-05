@@ -10,7 +10,7 @@ const notificationReducer = (state, action) => {
   return action
 }
 
-export let timeoutId
+let timeoutId
 
 export const cleartimeOutId = () => {
   timeoutId && clearTimeout(timeoutId)
@@ -62,7 +62,7 @@ const App = () => {
     voteMutation.mutate(changedAnecdote)
     notificationDispatch(`Anecdote '${anecdote.content}' voted`)
     cleartimeOutId()
-    const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 3000)
+    const newTimeoutId = setTimeout(() => { notificationDispatch(null) }, 5000)
     settimeOutId(newTimeoutId)
   }
 
